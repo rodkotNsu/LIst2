@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include <stdbool.h>
 //#include <crtdbg.h>
+//#include <locale>
 typedef int ListElement;
 struct NodeList {
 	ListElement element;
@@ -15,18 +16,15 @@ struct List {
 };
 typedef struct List List;
 
-
-
-
-List * init() {
+List* init() {
 	List* link_new_element = (List*)malloc(sizeof(List));
 	if (link_new_element) {
 		link_new_element->head = NULL;
 		link_new_element->last = link_new_element->head;
-		
+
 		return link_new_element;
 	}
-	 
+
 	return NULL;
 
 
@@ -48,7 +46,7 @@ unsigned int len(List* list)
 	return length_list;
 
 }
- bool  add(List* list, ListElement x) {
+bool  add(List* list, ListElement x) {
 	NodeList* link_new_element = (NodeList*)malloc(sizeof(NodeList));
 	if (link_new_element)
 	{
@@ -98,15 +96,69 @@ void clean(List* list) {
 	free(list);
 }
 
-int main(void) {
-	List* arr= init();
-	 
-	int n;
 
-	scanf_s("%d", &n);
-	for (int i = 0; i < n; i++)
+
+
+void remove_elemets_circle(List* list, int k) {
+	//Номерация элементов начинается с 0(head)
+	unsigned int length = len(list);
+	NodeList* actual = list->last;
+
+
+	int i = 1;
+	bool flag = false;
+
+	while (length != 1)
+	{
+		list->head = actual;
+		actual = actual->next;
+		if (flag) {
+			list->last = list->last->next;
+		}
+		flag = true;
+		if (i == k) {
+			NodeList* tmp = actual;
+			//printf("%d\n", actual->element);
+
+			list->head->next = actual->next;
+			actual = list->head;
+
+			free(tmp);
+
+			i = 0;
+			flag = false;
+			length--;
+		}
+		i++;
+	}
+
+	printf("last #%d", list->head->element);
+
+}
+
+
+int main(void) {
+	//setlocale(LC_ALL, "Russian");
+	List* arr = init();
+	int n = 0;
+	int k = 0;
+	while (n <= 0 || k <= 0) {
+		printf("in a circle: \n");
+		scanf_s("%d", &n);
+		printf("Everyone is eliminated: \n");
+		scanf_s("%d", &k);
+		if (n <= 0 || k <= 0)
+			printf("Invalid data,please enter again\n/**********************************************/\n");
+	}
+	for (int i = 1; i < n + 1; i++)
 		add(arr, i);
-	print_list(arr);
+	remove_elemets_circle(arr, k);
+
+
+
+
+
+
 	clean(arr);
 
 

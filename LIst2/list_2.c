@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include<stdlib.h>
+#include <stdbool.h>
 //#include <crtdbg.h>
+
 typedef int ListElement;
 struct NodeList {
 	ListElement element;
@@ -14,16 +16,16 @@ struct List {
 };
 typedef struct List List;
 
-
-
 List* init() {
-	List* newList = (List*)malloc(sizeof(List));
-	newList->head = NULL;
-	newList->last = newList->head;
+	List* link_new_element = (List*)malloc(sizeof(List));
+	if (link_new_element) {
+		link_new_element->head = NULL;
+		link_new_element->last = link_new_element->head;
 
+		return link_new_element;
+	}
 
-
-	return newList;
+	return NULL;
 
 
 }
@@ -31,7 +33,6 @@ unsigned int len(List* list)
 {
 	unsigned int length_list = 0;
 	NodeList* tmp = list->head;
-
 	do
 	{
 		if (tmp == NULL) break;
@@ -39,35 +40,37 @@ unsigned int len(List* list)
 		tmp = tmp->next;
 	} while (tmp != list->head);
 
-
-
 	return length_list;
 
 }
-int add(List* list, ListElement x) {
-	NodeList* newElement = (NodeList*)malloc(sizeof(NodeList));
-	newElement->element = x;
+bool  add(List* list, ListElement x) {
+	NodeList* link_new_element = (NodeList*)malloc(sizeof(NodeList));
+	if (link_new_element)
+	{
+		(*link_new_element).element = x;
 
-	if ((list)->head == NULL) {
-		(list)->head = newElement;
-		(list)->last = newElement;
-		newElement->next = (list)->head;
-		return 0;
+		if ((list)->head == NULL) {
+			(list)->head = link_new_element;
+			(list)->last = link_new_element;
+			link_new_element->next = (list)->head;
+			return 0;
+		}
+		link_new_element->next = (list)->head;
+
+		(list)->last->next = link_new_element;
+		(list)->last = link_new_element;
+
+		return true;
+
 	}
-	newElement->next = (list)->head;
-
-	(list)->last->next = newElement;
-	(list)->last = newElement;
-
-	return 1;
-
-
+	else
+		return false;
 
 
 }
 
 
-void printList(List* list) {
+void print_list(List* list) {
 	NodeList* tmp = list->head;
 	do
 	{
@@ -90,16 +93,60 @@ void clean(List* list) {
 	free(list);
 }
 
+
+
+
+void remove_elemets_circle(List* list, int k) {
+	unsigned int length = len(list);
+	NodeList* actual = list->last;
+
+	int i = 1;
+	bool flag = false;
+
+	while (length != 1)
+	{
+		list->head = actual;
+		actual = actual->next;
+		if (flag) {
+			list->last = list->last->next;
+		}
+		flag = true;
+		if (i == k) {
+			NodeList* tmp = actual;
+
+			list->head->next = actual->next;
+			actual = list->head;
+
+			free(tmp);
+
+			i = 0;
+			flag = false;
+			length--;
+		}
+		i++;
+	}
+
+	printf("last #%d", list->head->element);
+	clean(list);
+}
+
+
 int main(void) {
+
 	List* arr = init();
-	int n;
-
-	scanf_s("%d", &n);
-	for (int i = 0; i < n; i++)
+	int n = 0;
+	int k = 0;
+	while (n <= 0 || k <= 0) {
+		printf("in a circle: \n");
+		scanf_s("%d", &n);
+		printf("Everyone is eliminated: \n");
+		scanf_s("%d", &k);
+		if (n <= 0 || k <= 0)
+			printf("Invalid data,please enter again\n/**********************************************/\n");
+	}
+	for (int i = 1; i < n + 1; i++)
 		add(arr, i);
-	printList(arr);
-	clean(arr);
-
+	remove_elemets_circle(arr, k);
 
 	//_CrtDumpMemoryLeaks();
 
