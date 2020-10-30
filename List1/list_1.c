@@ -18,15 +18,15 @@ typedef struct List List;
 
 
 
-List * init() {
+List* init() {
 	List* link_new_element = (List*)malloc(sizeof(List));
 	if (link_new_element) {
 		link_new_element->head = NULL;
 		link_new_element->last = link_new_element->head;
-		
+
 		return link_new_element;
 	}
-	 
+
 	return NULL;
 
 
@@ -48,7 +48,9 @@ unsigned int len(List* list)
 	return length_list;
 
 }
- bool  add(List* list, ListElement x) {
+bool  add(List* list, ListElement x) {
+	if (list == NULL)
+		return false;
 	NodeList* link_new_element = (NodeList*)malloc(sizeof(NodeList));
 	if (link_new_element)
 	{
@@ -58,7 +60,7 @@ unsigned int len(List* list)
 			(list)->head = link_new_element;
 			(list)->last = link_new_element;
 			link_new_element->next = (list)->head;
-			return 0;
+			return true;
 		}
 		link_new_element->next = (list)->head;
 
@@ -76,6 +78,7 @@ unsigned int len(List* list)
 
 
 void print_list(List* list) {
+
 	NodeList* tmp = list->head;
 	do
 	{
@@ -99,8 +102,8 @@ void clean(List* list) {
 }
 
 int main(void) {
-	List* arr= init();
-	 
+	List* arr = init();
+
 	int n;
 
 	scanf_s("%d", &n);
